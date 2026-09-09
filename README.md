@@ -44,7 +44,7 @@ To try it on a phone or iPad on the same wifi, double-click
 | `style.css` | shared styling for both pages |
 | `focus_dorian_drift.webm` | Opus 105 kbps, 20 MB — served where supported |
 | `focus_dorian_drift.m4a` | AAC 129 kbps, 24 MB — fallback, covers every iPhone |
-| `focus_dorian_drift_n{33,66,100}.m4a` | same track with masking noise pre-mixed, 24 MB each |
+| `focus_dorian_drift_n{17,33,50,66,83,100}.m4a` | same track with masking noise pre-mixed, 24 MB each |
 | `make_noise_variants.py` | generates those three |
 | `focus_dorian_drift.flac` | lossless master, 129 MB — **local only, gitignored** |
 | `focus_synth.py` | the synthesiser that generated it |
@@ -105,7 +105,8 @@ of AAC, say) compounds artefacts, so any new bitrate or new noise variant should
 start here.
 
 `make_noise_variants.py` takes the WAV if one is lying around and otherwise
-decodes this FLAC through ffmpeg. Because the noise seed is fixed, rebuilding
+decodes this FLAC through ffmpeg. Pass levels to rebuild a subset
+(`python3 make_noise_variants.py 17 50 83`). Because the noise seed is fixed, rebuilding
 from the FLAC reproduces the WAV-sourced variants exactly — measured difference
 between the two routes: **-240 dBFS**, i.e. the float32 noise floor.
 
@@ -149,11 +150,17 @@ build, and that page **never constructs an AudioContext** (verified by
 instrumenting the constructor: zero built across a full session, including a
 noise change).
 
-Masking noise there is not generated live — it is four pre-mixed files at 0 /
-33 / 66 / 100%, and the slider swaps between them. All four are sample-aligned
-with the clean master (measured cross-correlation lag: **0 samples**) and sit
-within 1 dB of each other in RMS, so switching carries your exact place in the
-music across with no jump in level. It costs a short buffering pause, which is
+Masking noise there is not generated live — it is seven pre-mixed files at
+0 / 17 / 33 / 50 / 66 / 83 / 100%, and the slider swaps between them. The
+percentage is the noise amplitude against the music, so the ladder in dB is
+off, then −15.4, −9.6, −6.0, −3.6, −1.6, 0 dB: coarse at the bottom and finer
+towards the top, which is where you tend to be hunting for the point that
+speech stops resolving.
+
+All seven are sample-aligned with the clean master (measured cross-correlation
+lag: **0 samples**, ±1 from decoder rounding) and sit within ~1.3 dB of each
+other in RMS, so switching carries your exact place in the music across with no
+jump in level. It costs a short buffering pause, which is
 why the page tells you to pick a level and leave it.
 
 Warmth and the 40 Hz pulse need live processing, so they exist only in the

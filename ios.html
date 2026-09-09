@@ -37,14 +37,15 @@
 
   <div class="ctl">
     <div class="hdr"><span class="k">masking noise</span><span class="fill"></span><span class="v" id="vNoise">off</span></div>
-    <input type="range" id="noise" min="0" max="3" step="1" value="0" aria-label="Masking noise">
+    <input type="range" id="noise" min="0" max="6" step="1" value="0" aria-label="Masking noise">
     <div class="steps" id="steps">
-      <span data-i="0">off</span><span data-i="1">33</span><span data-i="2">66</span><span data-i="3">100</span>
+      <span data-i="0">off</span><span data-i="1">17</span><span data-i="2">33</span><span data-i="3">50</span><span data-i="4">66</span><span data-i="5">83</span><span data-i="6">100</span>
     </div>
-    <p>Four pre-mixed versions of the track rather than a live generator. Moving
+    <p>Seven pre-mixed versions of the track rather than a live generator. Moving
        this swaps the file and keeps your place in the music. Raise it until
        nearby speech stops resolving into words &mdash; that point is the whole
-       trick.</p>
+       trick. The numbers are the noise level against the music, so 100 means
+       the two sit at matched loudness.</p>
   </div>
 
   <div class="ctl">
@@ -66,12 +67,12 @@
       iOS stops it. This page never creates one.</p></div>
 
     <div class="note"><span class="n">02</span><p>
-      <b>So the noise is baked in instead.</b> Each level is a separate mixed
-      file. That keeps playback on the plain media path, which keeps running
+      <b>So the noise is baked in instead.</b> Each of the seven levels is a
+      separate mixed file. That keeps playback on the plain media path, which keeps running
       with the screen locked and shows up in your lock-screen controls.</p></div>
 
     <div class="note"><span class="n">03</span><p>
-      <b>Switching is seamless in position, not instant.</b> All four files are
+      <b>Switching is seamless in position, not instant.</b> All seven files are
       sample-aligned with each other, so your place in the music carries across
       exactly &mdash; but the new one has to buffer first, so expect a short
       pause when you move the slider. Pick a level and leave it.</p></div>
@@ -107,9 +108,12 @@
    costs background playback on iOS, so the masking levels are separate
    pre-mixed files instead of a live generator. AAC because it is the one
    format every iOS version plays. */
-const FILES=['focus_dorian_drift.m4a','focus_dorian_drift_n33.m4a',
-             'focus_dorian_drift_n66.m4a','focus_dorian_drift_n100.m4a'];
-const LABEL=['off','33','66','100'];
+const FILES=['focus_dorian_drift.m4a',
+             'focus_dorian_drift_n17.m4a','focus_dorian_drift_n33.m4a',
+             'focus_dorian_drift_n50.m4a','focus_dorian_drift_n66.m4a',
+             'focus_dorian_drift_n83.m4a','focus_dorian_drift_n100.m4a'];
+const LABEL=['off','17','33','50','66','83','100'];
+const MAX=FILES.length-1;
 
 const $=id=>document.getElementById(id);
 const clockEl=$('clock'), statusEl=$('status'), errEl=$('err'), playEl=$('play');
@@ -170,10 +174,10 @@ function fmt(s){ s=Math.max(0,Math.floor(s));
 function tick(){ if(playing){ elapsed=(performance.now()-started)/1000;
   clockEl.textContent=fmt(elapsed); } }
 
-/* All four files are sample-aligned, so carrying currentTime across keeps the
+/* All seven files are sample-aligned, so carrying currentTime across keeps the
    listener's exact place in the music. */
 function setLevel(i){
-  i=Math.max(0,Math.min(3,i|0));
+  i=Math.max(0,Math.min(MAX,i|0));
   paint(i);
   if(i===level) return;
   level=i;
@@ -199,7 +203,7 @@ $('noise').addEventListener('input',e=>setLevel(+e.target.value));
   s.addEventListener('click',()=>setLevel(+s.dataset.i)));
 
 let start=0;
-try{ start=Math.max(0,Math.min(3,parseInt(localStorage.getItem('deepwork.ios')||'0',10)||0)); }catch(e){}
+try{ start=Math.max(0,Math.min(MAX,parseInt(localStorage.getItem('deepwork.ios')||'0',10)||0)); }catch(e){}
 level=start; paint(start);
 
 playEl.addEventListener('click',toggle);

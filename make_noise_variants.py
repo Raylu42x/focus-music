@@ -18,7 +18,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # The WAV is a transient render artefact and is usually deleted; the FLAC is the
 # lossless master and is bit-identical to it. Take whichever is present.
 CANDIDATES = ["focus_dorian_drift.wav", "focus_dorian_drift.flac"]
-LEVELS = [33, 66, 100]          # percent, as amplitude relative to the music
+# Percent, as amplitude relative to the music. Roughly evenly spaced so the
+# slider on ios.html has a usable travel rather than three coarse jumps.
+LEVELS = [17, 33, 50, 66, 83, 100]
 WRAP = 10.0
 
 def load_master():
@@ -66,6 +68,14 @@ def pink(n, rng, octaves=16):
         out += np.repeat(vals, step)[:n]
     return out / np.sqrt(octaves)
 
+
+# Generate a subset by passing levels on the command line, e.g.
+#   python3 make_noise_variants.py 17 50 83
+# The seed is fixed, so any subset is identical to the same levels produced in
+# a full run -- the variants are reproducible and interchangeable.
+wanted = [int(a) for a in sys.argv[1:] if a.isdigit()]
+if wanted:
+    LEVELS = [l for l in LEVELS if l in wanted] or wanted
 
 rng = np.random.default_rng(20260909)
 Wn = int(SR * WRAP)
