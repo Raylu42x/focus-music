@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DEEP WORK</title>
+<meta name="description" content="A beatless generated focus bed. Loops forever.">
+<meta name="theme-color" content="#0c0c0e">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+
+  <h1>DEEP WORK</h1>
+  <p class="tag">generated focus bed &mdash; no beat, no melody to follow, no end</p>
+  <p class="xlink">on iPhone or iPad? &rarr; <a href="ios.html">use the iOS build</a> <span style="color:var(--faint)">(keeps playing with the screen locked)</span></p>
+
+  <div class="spec">
+    <div><span class="k">length</span><span class="fill"></span><span class="v" id="sLen">25:36 &middot; loops forever</span></div>
+    <div><span class="k">key</span><span class="fill"></span><span class="v">D dorian, tonic pedal</span></div>
+    <div><span class="k">tempo</span><span class="fill"></span><span class="v">none</span></div>
+    <div><span class="k">source</span><span class="fill"></span><span class="v">additive synthesis, numpy</span></div>
+    <div><span class="k">format</span><span class="fill"></span><span class="v" id="sFmt">&mdash;</span></div>
+    <div><span class="k">output</span><span class="fill"></span><span class="v" id="sMode">direct &middot; background-safe</span></div>
+  </div>
+
+  <hr>
+
+  <div class="transport">
+    <button id="play" aria-label="Play">&#9654; PLAY</button>
+    <div class="clockwrap">
+      <div id="clock">00:00:00</div>
+      <div id="status">idle</div>
+    </div>
+  </div>
+  <div id="meter" aria-hidden="true"></div>
+  <div id="err"></div>
+
+  <hr>
+
+  <div class="ctl">
+    <div class="hdr"><span class="k">music</span><span class="fill"></span><span class="v" id="vMusic">70</span></div>
+    <input type="range" id="music" min="0" max="100" value="70" aria-label="Music level">
+  </div>
+
+  <div class="ctl">
+    <div class="hdr"><span class="k">masking noise</span><span class="fill"></span><span class="v" id="vNoise">0</span></div>
+    <input type="range" id="noise" min="0" max="100" value="0" aria-label="Masking noise">
+    <p>Pink noise, generated in the browser. Raise it until nearby speech stops
+       resolving into words. That point is the whole trick.</p>
+  </div>
+
+  <div class="ctl">
+    <div class="hdr"><span class="k">warmth</span><span class="fill"></span><span class="v" id="vTone">bypass</span></div>
+    <input type="range" id="tone" min="600" max="9000" value="9000" aria-label="Warmth">
+    <p>Master low-pass. Darker is less alerting; move it down as your ears tire. At the top it is bypassed, which keeps playback on the phone-friendly path &mdash; see note 09.</p>
+  </div>
+
+  <div class="ctl">
+    <div class="hdr"><span class="k">40 Hz pulse</span><span class="fill"></span><span class="v" id="vPulse">off</span></div>
+    <input type="range" id="pulse" min="0" max="100" value="0" aria-label="40 Hz pulse">
+    <p>An amplitude-modulated band at 40 Hz. Straight answer: the auditory
+       steady-state response really does peak near 40 Hz, but the evidence that
+       it improves <i>focus</i> is thin. Off by default. Keep it only if you
+       notice something.</p>
+  </div>
+
+  <hr>
+
+  <section class="notes">
+    <h2>NOTES</h2>
+
+    <div class="note"><span class="n">01</span><p>
+      <b>Nothing here is speech-shaped.</b> Irrelevant speech disrupts verbal
+      working memory, so anything that parses as language competes with the
+      part of you that is reading and writing. No vocals, and nothing that
+      imitates the cadence of a voice.</p></div>
+
+    <div class="note"><span class="n">02</span><p>
+      <b>Nothing changes state.</b> Sound that shifts from segment to segment
+      disrupts ordered work far more than steady sound does. So there is no
+      beat, no groove, no repeating figure and no section boundary. Chords
+      glide rather than cut, over a 32-second cycle, above a D that never
+      moves.</p></div>
+
+    <div class="note"><span class="n">03</span><p>
+      <b>Nothing modulates between 4 and 8 Hz.</b> Speech modulates fastest
+      around 4&ndash;5 Hz and the ear is tuned to catch it. Measured across the
+      finished file: <i>0.2%</i> of envelope energy in that band.</p></div>
+
+    <div class="note"><span class="n">04</span><p>
+      <b>Nothing swells.</b> A level rider holds the continuous bed flat, so
+      loudness stays inside <i>0.7 dB</i> across the middle 90% of the run.
+      Earlier drafts wandered 13 dB and kept pulling the eye off the screen.</p></div>
+
+    <div class="note"><span class="n">05</span><p>
+      <b>No sharp onsets.</b> Transients trigger the orienting reflex. Bell
+      attacks are 45&nbsp;ms and sit about 7 dB under the bed; the pads take
+      seconds to arrive.</p></div>
+
+    <div class="note"><span class="n">06</span><p>
+      <b>Nothing can surprise you harmonically.</b> Every pitched event is
+      drawn from D minor pentatonic, which is consonant against all six chords,
+      and moves by small random steps &mdash; so there is no line to follow and
+      nothing to anticipate.</p></div>
+
+    <div class="note"><span class="n">07</span><p>
+      <b>Dark on purpose.</b> High-frequency energy is arousing, so the mix
+      tilts down steadily above 1 kHz. The gap left around 1&ndash;2 kHz is
+      deliberate: that is where speech intelligibility lives, and keeping the
+      music out of it lets the masking noise do that job unopposed.</p></div>
+
+    <div class="note"><span class="n">08</span><p>
+      <b>Play it quieter than feels right</b> &mdash; roughly 45&ndash;55 dBA.
+      It is built to sit underneath your thoughts, not beside them. If you are
+      noticing it, it is too loud.</p></div>
+    <div class="note"><span class="n">09</span><p>
+      <b>Phones.</b> By default this plays as a plain looping audio stream with
+      no Web Audio in the chain, so it keeps going when you lock the screen or
+      switch apps, and it appears in your lock-screen controls. The moment you
+      touch masking noise, warmth or the 40 Hz pulse, it has to build an audio
+      graph &mdash; and iOS suspends audio graphs when the page goes to the
+      background. Processing or background playback: on iPhone you get one or
+      the other, and the <i>output</i> line above always says which you are on.</p></div>
+
+    <div class="note"><span class="n">10</span><p>
+      <b>Not MP3.</b> Served as Opus where the browser supports it and AAC
+      everywhere else &mdash; both are markedly better than MP3 per byte, and
+      unlike MP3 both carry proper gapless metadata, which is what lets the
+      loop close without a seam.</p></div>
+  </section>
+
+  <hr>
+  <footer>
+    <div class="spec">
+      <div><span class="k">loop</span><span class="fill"></span><span class="v" id="fLoop">native, gapless</span></div>
+      <div><span class="k">stream</span><span class="fill"></span><span class="v" id="fStream">&mdash;</span></div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+'use strict';
+(function(){
+
+/* Ordered by preference. Opus is the best quality per byte and every modern
+   browser but older Safari takes it; AAC covers everything else, iPhones
+   included. MP3 is deliberately absent -- it is the least efficient of the
+   three and, unlike these two, carries no reliable gapless metadata, which is
+   exactly what makes a loop close cleanly. */
+const SOURCES = [
+  {src:'focus_dorian_drift.webm', type:'audio/webm; codecs="opus"', label:'opus 105 kbps · 20 MB'},
+  {src:'focus_dorian_drift.m4a',  type:'audio/mp4; codecs="mp4a.40.2"', label:'aac 129 kbps · 24 MB'}
+];
+const SEG = 24;
+
+const $ = id => document.getElementById(id);
+const clockEl=$('clock'), statusEl=$('status'), meterEl=$('meter'), errEl=$('err'),
+      playEl=$('play'), modeEl=$('sMode'), fmtEl=$('sFmt'), streamEl=$('fStream');
+
+let audio=null, playing=false, started=0, elapsed=0;
+let ctx=null, gMusic=null, gNoise=null, gPulse=null, tone=null, analyser=null;
+let clock=null, vu=null, volumeWorks=true;
+
+function fail(m){ errEl.textContent=m; errEl.style.display='block'; }
+function say(h){ statusEl.innerHTML=h; }
+
+/* iOS ignores HTMLMediaElement.volume entirely -- it is hardware-controlled
+   there. Feature-test it rather than sniffing the user agent, because it
+   decides whether the music slider can work without an audio graph. */
+function probeVolume(){
+  try{ const p=new Audio(); p.volume=0.42; return Math.abs(p.volume-0.42)<0.01; }
+  catch(e){ return false; }
+}
+
+function pickSource(){
+  const probe=new Audio();
+  for(const s of SOURCES){
+    if(probe.canPlayType(s.type)) return s;
+  }
+  return null;
+}
+
+function pinkBuffer(ac,secs,fadeSecs){
+  const sr=ac.sampleRate, n=Math.floor(sr*secs), f=Math.floor(sr*fadeSecs);
+  const buf=ac.createBuffer(2,n,sr);
+  for(let c=0;c<2;c++){
+    const raw=new Float32Array(n+f);
+    let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+    for(let i=0;i<n+f;i++){
+      const w=Math.random()*2-1;
+      b0=0.99886*b0+w*0.0555179; b1=0.99332*b1+w*0.0750759;
+      b2=0.96900*b2+w*0.1538520; b3=0.86650*b3+w*0.3104856;
+      b4=0.55000*b4+w*0.5329522; b5=-0.7616*b5-w*0.0168980;
+      raw[i]=(b0+b1+b2+b3+b4+b5+b6+w*0.5362)*0.11; b6=w*0.115926;
+    }
+    const d=buf.getChannelData(c);
+    d.set(raw.subarray(0,n));
+    /* Fold the tail back over the head with an equal-power crossfade so the
+       noise loops without a dropout. Tapering both ends to zero -- the obvious
+       trick -- makes it audibly pump every pass. */
+    for(let i=0;i<f;i++){ const x=(i/f)*Math.PI/2;
+      d[i]=raw[i]*Math.sin(x)+raw[n+i]*Math.cos(x); }
+  }
+  return buf;
+}
+
+/* Built only when a processing control is actually used. Until then there is
+   no AudioContext at all, which is what keeps playback alive on a locked
+   phone. Once built we stay on it -- a MediaElementSource cannot be undone. */
+function ensureGraph(){
+  if(ctx) return true;
+  try{ ctx=new (window.AudioContext||window.webkitAudioContext)(); }
+  catch(e){ fail('Web Audio would not start: '+e.message); return false; }
+
+  /* iOS creates the context suspended. Because routing the element through a
+     suspended graph silences it completely, resume immediately -- we are inside
+     a user gesture here (a slider input), so iOS permits it. */
+  if(ctx.state==='suspended') ctx.resume().catch(()=>{});
+
+  const src=ctx.createMediaElementSource(audio);
+  audio.volume=1;                                  // level now lives in gMusic
+
+  gMusic=ctx.createGain(); gMusic.gain.value=+$('music').value/100;
+  gNoise=ctx.createGain(); gNoise.gain.value=(+$('noise').value/100)*0.30;
+  gPulse=ctx.createGain(); gPulse.gain.value=(+$('pulse').value/100)*0.10;
+  tone=ctx.createBiquadFilter(); tone.type='lowpass'; tone.Q.value=0.5;
+  tone.frequency.value=Math.min(+$('tone').value,20000);
+  analyser=ctx.createAnalyser(); analyser.fftSize=1024; analyser.smoothingTimeConstant=0.82;
+
+  const bus=ctx.createGain();
+  src.connect(gMusic); gMusic.connect(bus); gNoise.connect(bus); gPulse.connect(bus);
+  bus.connect(tone); tone.connect(analyser); analyser.connect(ctx.destination);
+
+  const pink=pinkBuffer(ctx,20,1.5);
+  const nz=ctx.createBufferSource(); nz.buffer=pink; nz.loop=true;
+  const nlp=ctx.createBiquadFilter(); nlp.type='lowpass'; nlp.frequency.value=5200;
+  nz.connect(nlp); nlp.connect(gNoise); nz.start();
+
+  const ps=ctx.createBufferSource(); ps.buffer=pink; ps.loop=true;
+  const bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=220; bp.Q.value=1.2;
+  const am=ctx.createGain(); am.gain.value=0;
+  const lfo=ctx.createOscillator(); lfo.frequency.value=40;
+  const dep=ctx.createGain(); dep.gain.value=0.5;
+  const dc=ctx.createConstantSource(); dc.offset.value=0.5;
+  lfo.connect(dep); dep.connect(am.gain); dc.connect(am.gain);
+  ps.connect(bp); bp.connect(am); am.connect(gPulse);
+  ps.start(0,7.3); lfo.start(); dc.start();        // offset so the loops never align
+
+  modeEl.innerHTML='processed &middot; web audio';
+  if(playing){ clearInterval(vu); restMeter(); vu=setInterval(tickMeter,66); }
+  return true;
+}
+
+function glide(p,v){ if(p) p.setTargetAtTime(v,ctx.currentTime,0.15); }
+
+function fmt(s){ s=Math.max(0,Math.floor(s));
+  const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;
+  return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(x).padStart(2,'0'); }
+function tickClock(){ if(playing){ elapsed=(performance.now()-started)/1000;
+  clockEl.textContent=fmt(elapsed); } }
+
+const bins=new Uint8Array(512);
+const BLOCK=['▁','▂','▃','▄','▅','▆','▇','█'];
+function restMeter(){ meterEl.textContent=BLOCK[0].repeat(SEG); }
+/* Interval, not requestAnimationFrame: rAF does not fire at all in a
+   backgrounded or offscreen tab, which freezes the meter blank. */
+function tickMeter(){
+  if(!playing||!analyser) return;
+  analyser.getByteFrequencyData(bins);
+  let out='';
+  for(let i=0;i<SEG;i++){
+    const lo=Math.floor(Math.pow(i/SEG,1.7)*300);
+    const hi=Math.max(lo+1,Math.floor(Math.pow((i+1)/SEG,1.7)*300));
+    let s=0; for(let j=lo;j<hi;j++) s+=bins[j];
+    const v=Math.min(1,(s/(hi-lo))/150);
+    const ch=BLOCK[Math.min(7,Math.floor(v*8))];
+    out+= v>0.55 ? '<span class="on">'+ch+'</span>'
+        : v>0.2  ? '<span class="mid">'+ch+'</span>' : ch;
+  }
+  meterEl.innerHTML=out;
+}
+
+function media(){
+  if(!('mediaSession' in navigator)) return;
+  try{
+    navigator.mediaSession.metadata=new MediaMetadata({
+      title:'Deep Work', artist:'generated focus bed', album:'D dorian'});
+    navigator.mediaSession.setActionHandler('play',()=>{ if(!playing) toggle(); });
+    navigator.mediaSession.setActionHandler('pause',()=>{ if(playing) toggle(); });
+  }catch(e){}
+}
+
+async function toggle(){
+  if(!audio){
+    const pick=pickSource();
+    if(!pick){ say('unsupported'); fail('This browser cannot play Opus or AAC.'); return; }
+    audio=new Audio();
+    audio.src=pick.src;
+    audio.loop=true;               // the file wraps onto itself; let the browser loop it
+    audio.preload='auto';
+    audio.setAttribute('playsinline','');
+    fmtEl.textContent=pick.type.indexOf('webm')>=0?'opus / webm':'aac / mp4';
+    streamEl.textContent=pick.label;
+    audio.addEventListener('playing',()=>{ if(playing) say('playing'); });
+    audio.addEventListener('error',()=>{ say('failed');
+      fail('Could not load '+pick.src+'. If you opened this as a file:// path, '
+         +'serve the folder over http instead — run start.command.'); });
+    media();
+  }
+  if(ctx&&ctx.state==='suspended') await ctx.resume();
+
+  if(!playing){
+    playing=true; say('buffering&hellip;');
+    const p=audio.play(); if(p) p.catch(e=>{ playing=false; say('blocked');
+      fail('Playback was blocked: '+e.message); });
+    started=performance.now()-elapsed*1000;
+    playEl.innerHTML='&#9632; STOP';
+    clearInterval(clock); clock=setInterval(tickClock,500); tickClock();
+    if(analyser){ restMeter(); clearInterval(vu); vu=setInterval(tickMeter,66); }
+    if('mediaSession' in navigator) navigator.mediaSession.playbackState='playing';
+  }else{
+    playing=false;
+    clearInterval(clock); clearInterval(vu);
+    try{ audio.pause(); }catch(e){}
+    elapsed=(performance.now()-started)/1000;
+    playEl.innerHTML='&#9654; PLAY';
+    say('paused'); meterEl.innerHTML='';
+    if('mediaSession' in navigator) navigator.mediaSession.playbackState='paused';
+  }
+}
+
+/* controls */
+const STORE='deepwork.v2';
+function save(){ try{ const o={};
+  for(const k of ['music','noise','tone','pulse']) o[k]=$(k).value;
+  localStorage.setItem(STORE,JSON.stringify(o)); }catch(e){} }
+
+function setMusic(v){
+  if(ctx) glide(gMusic.gain,v/100);
+  else if(volumeWorks && audio) audio.volume=Math.min(1,v/100);
+  else if(v<100 && audio && ensureGraph()) glide(gMusic.gain,v/100);
+}
+const WIRE={
+  music:[v=>$('vMusic').textContent=v, v=>setMusic(+v)],
+  noise:[v=>$('vNoise').textContent=v,
+         v=>{ if(+v>0&&!ensureGraph()) return; if(ctx) glide(gNoise.gain,(v/100)*0.30); }],
+  tone: [v=>$('vTone').textContent=(+v>=9000?'bypass':(v/1000).toFixed(1)+'k'),
+         v=>{ if(+v<9000&&!ensureGraph()) return; if(ctx) glide(tone.frequency,Math.min(+v,20000)); }],
+  pulse:[v=>$('vPulse').textContent=(+v?v:'off'),
+         v=>{ if(+v>0&&!ensureGraph()) return; if(ctx) glide(gPulse.gain,(v/100)*0.10); }]
+};
+try{ const st=JSON.parse(localStorage.getItem(STORE)||'{}');
+  for(const k in WIRE) if(k in st) $(k).value=st[k]; }catch(e){}
+for(const id in WIRE){
+  const [label,apply]=WIRE[id];
+  label($(id).value);
+  $(id).addEventListener('input',ev=>{ label(ev.target.value); apply(ev.target.value); save(); });
+}
+
+volumeWorks=probeVolume();
+if(!volumeWorks) modeEl.innerHTML='direct &middot; background-safe';
+
+/* iOS suspends the graph when the page backgrounds; pick it back up on return */
+function kick(){ if(ctx && ctx.state==='suspended') ctx.resume().catch(()=>{}); }
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden && playing) kick(); });
+document.addEventListener('pointerdown',kick,{passive:true});
+document.addEventListener('touchend',kick,{passive:true});
+
+playEl.addEventListener('click',toggle);
+document.addEventListener('keydown',e=>{
+  if(e.code==='Space'&&e.target.tagName!=='INPUT'){ e.preventDefault(); toggle(); }
+});
+})();
+</script>
+</body>
+</html>

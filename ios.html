@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DEEP WORK — iOS</title>
+<meta name="theme-color" content="#0c0c0e">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+
+  <h1>DEEP WORK</h1>
+  <p class="tag">iOS build &mdash; plays with the screen locked</p>
+  <p class="xlink">on a computer? &rarr; <a href="index.html">full version</a>
+     <span style="color:var(--faint)">(live noise, warmth, 40&nbsp;Hz)</span></p>
+
+  <div class="spec">
+    <div><span class="k">length</span><span class="fill"></span><span class="v">25:36 &middot; loops forever</span></div>
+    <div><span class="k">key</span><span class="fill"></span><span class="v">D dorian, tonic pedal</span></div>
+    <div><span class="k">format</span><span class="fill"></span><span class="v">aac / mp4</span></div>
+    <div><span class="k">output</span><span class="fill"></span><span class="v" id="sMode">direct &middot; no web audio</span></div>
+  </div>
+
+  <hr>
+
+  <div class="transport">
+    <button id="play" aria-label="Play">&#9654; PLAY</button>
+    <div class="clockwrap">
+      <div id="clock">00:00:00</div>
+      <div id="status">idle</div>
+    </div>
+  </div>
+  <div id="err"></div>
+
+  <hr>
+
+  <div class="ctl">
+    <div class="hdr"><span class="k">masking noise</span><span class="fill"></span><span class="v" id="vNoise">off</span></div>
+    <input type="range" id="noise" min="0" max="3" step="1" value="0" aria-label="Masking noise">
+    <div class="steps" id="steps">
+      <span data-i="0">off</span><span data-i="1">33</span><span data-i="2">66</span><span data-i="3">100</span>
+    </div>
+    <p>Four pre-mixed versions of the track rather than a live generator. Moving
+       this swaps the file and keeps your place in the music. Raise it until
+       nearby speech stops resolving into words &mdash; that point is the whole
+       trick.</p>
+  </div>
+
+  <div class="ctl">
+    <div class="hdr"><span class="k">volume</span><span class="fill"></span><span class="v">device buttons</span></div>
+    <p>iOS does not let a web page set playback volume, so use the hardware
+       buttons. Play it quieter than feels right &mdash; roughly 45&ndash;55 dBA.
+       It should sit underneath your thoughts, not beside them.</p>
+  </div>
+
+  <hr>
+
+  <section class="notes">
+    <h2>WHY THIS PAGE EXISTS</h2>
+
+    <div class="note"><span class="n">01</span><p>
+      <b>iOS suspends Web Audio in the background.</b> The full version
+      generates its masking noise live and filters the output, which means an
+      audio graph &mdash; and the moment you lock an iPhone or switch apps,
+      iOS stops it. This page never creates one.</p></div>
+
+    <div class="note"><span class="n">02</span><p>
+      <b>So the noise is baked in instead.</b> Each level is a separate mixed
+      file. That keeps playback on the plain media path, which keeps running
+      with the screen locked and shows up in your lock-screen controls.</p></div>
+
+    <div class="note"><span class="n">03</span><p>
+      <b>Switching is seamless in position, not instant.</b> All four files are
+      sample-aligned with each other, so your place in the music carries across
+      exactly &mdash; but the new one has to buffer first, so expect a short
+      pause when you move the slider. Pick a level and leave it.</p></div>
+
+    <div class="note"><span class="n">04</span><p>
+      <b>The trade-off is warmth and the 40&nbsp;Hz pulse.</b> Both need live
+      processing, so they only exist in the
+      <a href="index.html">full version</a>. The track is already mixed dark,
+      so you are not missing much.</p></div>
+
+    <div class="note"><span class="n">05</span><p>
+      <b>Everything else is the same music</b> &mdash; beatless, no melody to
+      follow, nothing modulating in the 4&ndash;8&nbsp;Hz band where speech
+      lives, and flat enough in loudness that nothing pulls your eyes off the
+      screen. It loops forever with no seam.</p></div>
+  </section>
+
+  <hr>
+  <footer>
+    <div class="spec">
+      <div><span class="k">loop</span><span class="fill"></span><span class="v">native, gapless</span></div>
+      <div><span class="k">stream</span><span class="fill"></span><span class="v" id="fStream">aac 128 kbps &middot; 24 MB</span></div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+'use strict';
+(function(){
+
+/* No AudioContext anywhere in this file, deliberately. Creating one is what
+   costs background playback on iOS, so the masking levels are separate
+   pre-mixed files instead of a live generator. AAC because it is the one
+   format every iOS version plays. */
+const FILES=['focus_dorian_drift.m4a','focus_dorian_drift_n33.m4a',
+             'focus_dorian_drift_n66.m4a','focus_dorian_drift_n100.m4a'];
+const LABEL=['off','33','66','100'];
+
+const $=id=>document.getElementById(id);
+const clockEl=$('clock'), statusEl=$('status'), errEl=$('err'), playEl=$('play');
+
+let audio=null, playing=false, started=0, elapsed=0, level=0, clock=null;
+
+function say(h){ statusEl.innerHTML=h; }
+function fail(m){ errEl.textContent=m; errEl.style.display='block'; }
+
+function makeAudio(src,at,autoplay){
+  const a=new Audio();
+  a.src=src; a.loop=true; a.preload='auto';
+  a.setAttribute('playsinline','');
+  a.addEventListener('loadedmetadata',()=>{
+    if(at>0){ try{ a.currentTime=at%a.duration; }catch(e){} }
+    if(autoplay){ const p=a.play(); if(p) p.catch(()=>{}); }
+  },{once:true});
+  a.addEventListener('playing',()=>{ if(playing) say('playing'); });
+  a.addEventListener('error',()=>{ say('failed');
+    fail('Could not load '+src+'. Open this page over http (share-on-wifi.command), '
+       +'not as a file:// path.'); });
+  return a;
+}
+
+function media(){
+  if(!('mediaSession' in navigator)) return;
+  try{
+    navigator.mediaSession.metadata=new MediaMetadata({
+      title:'Deep Work', artist:'generated focus bed', album:'D dorian'});
+    navigator.mediaSession.setActionHandler('play',()=>{ if(!playing) toggle(); });
+    navigator.mediaSession.setActionHandler('pause',()=>{ if(playing) toggle(); });
+  }catch(e){}
+}
+
+function toggle(){
+  if(!audio){ audio=makeAudio(FILES[level],0,false); media(); }
+  if(!playing){
+    playing=true; say('buffering&hellip;');
+    const p=audio.play(); if(p) p.catch(e=>{ playing=false; say('blocked');
+      fail('Playback was blocked: '+e.message); });
+    started=performance.now()-elapsed*1000;
+    playEl.innerHTML='&#9632; STOP';
+    clearInterval(clock); clock=setInterval(tick,500); tick();
+    if('mediaSession' in navigator) navigator.mediaSession.playbackState='playing';
+  }else{
+    playing=false; clearInterval(clock);
+    try{ audio.pause(); }catch(e){}
+    elapsed=(performance.now()-started)/1000;
+    playEl.innerHTML='&#9654; PLAY';
+    say('paused');
+    if('mediaSession' in navigator) navigator.mediaSession.playbackState='paused';
+  }
+}
+
+function fmt(s){ s=Math.max(0,Math.floor(s));
+  const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;
+  return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(x).padStart(2,'0'); }
+function tick(){ if(playing){ elapsed=(performance.now()-started)/1000;
+  clockEl.textContent=fmt(elapsed); } }
+
+/* All four files are sample-aligned, so carrying currentTime across keeps the
+   listener's exact place in the music. */
+function setLevel(i){
+  i=Math.max(0,Math.min(3,i|0));
+  paint(i);
+  if(i===level) return;
+  level=i;
+  try{ localStorage.setItem('deepwork.ios',String(i)); }catch(e){}
+  if(!audio){ return; }
+  const at=audio.currentTime||0, wasPlaying=playing;
+  try{ audio.pause(); }catch(e){}
+  audio.src=''; audio.removeAttribute('src');
+  if(wasPlaying) say('switching&hellip;');
+  audio=makeAudio(FILES[i],at,wasPlaying);
+  media();
+}
+
+function paint(i){
+  $('vNoise').textContent=LABEL[i];
+  $('noise').value=i;
+  [...document.querySelectorAll('#steps span')].forEach(s=>
+    s.classList.toggle('sel', +s.dataset.i===i));
+}
+
+$('noise').addEventListener('input',e=>setLevel(+e.target.value));
+[...document.querySelectorAll('#steps span')].forEach(s=>
+  s.addEventListener('click',()=>setLevel(+s.dataset.i)));
+
+let start=0;
+try{ start=Math.max(0,Math.min(3,parseInt(localStorage.getItem('deepwork.ios')||'0',10)||0)); }catch(e){}
+level=start; paint(start);
+
+playEl.addEventListener('click',toggle);
+document.addEventListener('keydown',e=>{
+  if(e.code==='Space'&&e.target.tagName!=='INPUT'){ e.preventDefault(); toggle(); }
+});
+})();
+</script>
+</body>
+</html>

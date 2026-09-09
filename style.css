@@ -1,0 +1,93 @@
+:root{
+    --bg:#0c0c0e; --fg:#b4afa6; --hi:#e8e3d9; --dim:#6b665e; --faint:#3a3832;
+    --rule:#23221f; --amber:#d08b3f;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--fg); font-family:var(--mono);
+    font-size:13.5px; line-height:1.75; -webkit-font-smoothing:antialiased;
+    padding:clamp(20px,5vw,64px) clamp(16px,5vw,32px) 96px;
+  }
+  main{max-width:44rem; margin:0 auto}
+  a{color:var(--fg); text-underline-offset:3px}
+  a:hover{color:var(--amber)}
+  hr{border:0; border-top:1px solid var(--rule); margin:22px 0}
+
+  h1{font-size:13.5px; font-weight:400; letter-spacing:.42em; margin:0; color:var(--hi)}
+  .tag{color:var(--dim); margin:2px 0 0}
+
+  /* leader-dot spec rows */
+  .spec{margin:18px 0 0}
+  .spec div{display:flex; align-items:baseline; gap:.6ch; color:var(--dim)}
+  .spec .k{white-space:nowrap}
+  .spec .fill{flex:1; border-bottom:1px dotted var(--faint); transform:translateY(-.35em)}
+  .spec .v{white-space:nowrap; color:var(--fg)}
+
+  /* transport */
+  .transport{display:flex; align-items:flex-end; gap:clamp(14px,4vw,28px); flex-wrap:wrap}
+  button#play{
+    font-family:var(--mono); font-size:13.5px; color:var(--amber); background:transparent;
+    border:1px solid var(--rule); border-radius:0; padding:9px 16px; cursor:pointer;
+    letter-spacing:.18em; min-width:11ch; text-align:center; transition:border-color .15s,background .15s;
+  }
+  button#play:hover{border-color:var(--amber)}
+  button#play:active{background:#16150f}
+  .clockwrap{flex:1; min-width:12ch}
+  #clock{font-size:clamp(26px,7vw,34px); line-height:1; color:var(--hi); letter-spacing:.02em;
+         font-variant-numeric:tabular-nums}
+  #status{color:var(--dim); margin-top:6px}
+  #status b{color:var(--amber); font-weight:400}
+
+  /* block-character level meter */
+  #meter{margin-top:16px; color:var(--faint); letter-spacing:.12em; font-size:15px;
+         line-height:1; white-space:nowrap; overflow:hidden; user-select:none}
+  #meter span.on{color:var(--amber)}
+  #meter span.mid{color:var(--dim)}
+
+  /* controls */
+  .ctl{margin-top:26px}
+  .ctl .hdr{display:flex; align-items:baseline; gap:.6ch; color:var(--dim)}
+  .ctl .hdr .k{color:var(--fg); white-space:nowrap}
+  .ctl .hdr .fill{flex:1; border-bottom:1px dotted var(--faint); transform:translateY(-.35em)}
+  .ctl .hdr .v{color:var(--amber); white-space:nowrap; font-variant-numeric:tabular-nums}
+  .ctl p{margin:5px 0 0; color:var(--dim); max-width:56ch}
+  input[type=range]{
+    -webkit-appearance:none; appearance:none; width:100%; background:transparent;
+    height:26px; margin:4px 0 0; cursor:pointer; display:block;
+  }
+  input[type=range]::-webkit-slider-runnable-track{height:2px; background:var(--rule)}
+  input[type=range]::-moz-range-track{height:2px; background:var(--rule)}
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; width:11px; height:17px; margin-top:-7px;
+    background:var(--fg); border:0; border-radius:0;
+  }
+  input[type=range]::-moz-range-thumb{width:11px; height:17px; background:var(--fg);
+    border:0; border-radius:0}
+  input[type=range]:hover::-webkit-slider-thumb{background:var(--amber)}
+
+  /* notes */
+  section.notes{margin-top:30px}
+  section.notes h2{font-size:13.5px; font-weight:400; letter-spacing:.3em; color:var(--hi); margin:0 0 4px}
+  .note{display:flex; gap:1.6ch; margin-top:14px; align-items:flex-start}
+  .note .n{color:var(--faint); flex:none; font-variant-numeric:tabular-nums}
+  .note p{margin:0; color:var(--dim); max-width:64ch}
+  .note b{color:var(--fg); font-weight:400}
+  .note i{color:var(--fg); font-style:normal; border-bottom:1px solid var(--faint)}
+
+  footer{margin-top:34px; color:var(--faint)}
+  #err{color:var(--amber); margin-top:12px; display:none; max-width:60ch}
+
+  @media (max-width:520px){
+    body{font-size:13px}
+    .spec .v,.ctl .hdr .v{font-size:13px}
+  }
+
+  /* shared additions */
+  .xlink{margin:14px 0 0; color:var(--dim)}
+  .xlink a{color:var(--amber); text-decoration:none; border-bottom:1px solid var(--faint)}
+  .xlink a:hover{border-color:var(--amber)}
+  .steps{display:flex; justify-content:space-between; color:var(--faint); margin-top:2px}
+  .steps span{cursor:pointer; padding:2px 6px}
+  .steps span.sel{color:var(--amber)}

@@ -1,0 +1,10 @@
+# Lossless master: 114 MB, over GitHub's 100 MB per-file hard limit.
+# Regenerate with focus_synth.py, or keep it locally / on the VPS.
+*.flac
+
+# intermediate render + encode artefacts
+*.wav
+_*.m4a
+_*.webm
+render.log
+.DS_Store
