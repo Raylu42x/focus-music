@@ -46,7 +46,7 @@ To try it on a phone or iPad on the same wifi, double-click
 | `focus_dorian_drift.m4a` | AAC 129 kbps, 24 MB — fallback, covers every iPhone |
 | `focus_dorian_drift_n{33,66,100}.m4a` | same track with masking noise pre-mixed, 24 MB each |
 | `make_noise_variants.py` | generates those three |
-| `focus_dorian_drift.flac` | lossless master, 129 MB (bit-identical to the render) |
+| `focus_dorian_drift.flac` | lossless master, 129 MB — **local only, gitignored** |
 | `focus_synth.py` | the synthesiser that generated it |
 | `focus_dorian_drift.wav` | raw render, 258 MB — redundant, the FLAC matches it exactly |
 | `serve.py` | localhost-only static server with HTTP Range support |
@@ -91,6 +91,25 @@ if you overlap and crossfade — comb filtering, because the overlapping regions
 are the same audio offset by a few milliseconds. The single file avoids all of
 it. If the download ever does need to shrink, drop the bitrate or the length
 rather than segmenting.
+
+## The lossless master
+
+`focus_dorian_drift.flac` is the archival copy: 25:36, 44.1 kHz/16-bit stereo,
+bit-identical to what `focus_synth.py` renders (verified by MD5 against the raw
+WAV before that WAV was deleted).
+
+It is **not in the repository** — at 129 MB it exceeds GitHub's 100 MB per-file
+hard limit — and nothing at runtime reads it. The website never touches it. Its
+only job is to be the thing you re-encode *from*: going lossy-to-lossy (Opus out
+of AAC, say) compounds artefacts, so any new bitrate or new noise variant should
+start here.
+
+`make_noise_variants.py` takes the WAV if one is lying around and otherwise
+decodes this FLAC through ffmpeg. Because the noise seed is fixed, rebuilding
+from the FLAC reproduces the WAV-sourced variants exactly — measured difference
+between the two routes: **-240 dBFS**, i.e. the float32 noise floor.
+
+If you lose it, `python3 focus_synth.py` regenerates the master from scratch.
 
 ## Formats
 

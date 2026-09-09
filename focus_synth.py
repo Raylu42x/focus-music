@@ -35,7 +35,7 @@ WHY IT SOUNDS LIKE THIS (the design constraints are all attention research):
  7. No file-level fades: the player crossfades the loop, so there is never
     a track boundary or a silence to notice. Novelty is the enemy.
 """
-import numpy as np, wave, sys
+import numpy as np, os, sys, wave
 
 SR = 44100
 PROGRESSION = 192.0          # 6 chords x 32 s
@@ -284,7 +284,8 @@ final[:, :Wn] = master[:, :Wn] * head + master[:, N:N + Wn] * tail
 master = final
 del final
 
-out = "/Users/bennett/Repos/Making Music/focus_dorian_drift.wav"
+out = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                   "focus_dorian_drift.wav")
 with wave.open(out, 'wb') as w:
     w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR)
     w.writeframes((master.T * 32767).astype('<i2').tobytes())

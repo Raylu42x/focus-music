@@ -11,17 +11,38 @@ Variants are sample-aligned with the clean master, so switching mid-play can
 preserve position exactly. The noise is wrapped onto itself the same way the
 music is, so every variant still loops seamlessly.
 """
-import numpy as np, wave, subprocess, sys
+import numpy as np, os, subprocess, sys, wave
 
 SR = 44100
-SRC = "focus_dorian_drift.wav"
+HERE = os.path.dirname(os.path.abspath(__file__))
+# The WAV is a transient render artefact and is usually deleted; the FLAC is the
+# lossless master and is bit-identical to it. Take whichever is present.
+CANDIDATES = ["focus_dorian_drift.wav", "focus_dorian_drift.flac"]
 LEVELS = [33, 66, 100]          # percent, as amplitude relative to the music
 WRAP = 10.0
 
-print("reading master...", flush=True)
-w = wave.open(SRC); N = w.getnframes()
-music = np.frombuffer(w.readframes(N), '<i2').astype(np.float32).reshape(-1, 2) / 32768.0
-w.close()
+def load_master():
+    for name in CANDIDATES:
+        p = os.path.join(HERE, name)
+        if not os.path.exists(p):
+            continue
+        print(f"reading master: {name}", flush=True)
+        if p.endswith(".wav"):
+            w = wave.open(p)
+            n = w.getnframes()
+            a = np.frombuffer(w.readframes(n), '<i2').astype(np.float32) / 32768.0
+            w.close()
+            return a.reshape(-1, 2)
+        raw = subprocess.run(
+            ["ffmpeg", "-v", "error", "-i", p, "-f", "f32le", "-ac", "2",
+             "-ar", str(SR), "-"], capture_output=True, check=True).stdout
+        return np.frombuffer(raw, '<f4').reshape(-1, 2).copy()
+    sys.exit("No master found. Expected one of " + ", ".join(CANDIDATES)
+             + " here. Run focus_synth.py first.")
+
+
+music = load_master()
+N = len(music)
 music_rms = float(np.sqrt((music ** 2).mean()))
 print(f"  {N/SR/60:.2f} min, music rms {20*np.log10(music_rms):.1f} dBFS")
 
@@ -67,13 +88,13 @@ for pct in LEVELS:
     mix = music + noise * np.float32(music_rms * pct / 100.0)
     mix = np.tanh(mix * np.float32(1.15)).astype(np.float32)
     mix *= np.float32(0.891 / np.abs(mix).max())                # -1 dBFS
-    tmp = f"_mix{pct}.wav"
+    tmp = os.path.join(HERE, f"_mix{pct}.wav")
     with wave.open(tmp, 'wb') as o:
         o.setnchannels(2); o.setsampwidth(2); o.setframerate(SR)
         o.writeframes((mix * 32767).astype('<i2').tobytes())
-    out = f"focus_dorian_drift_n{pct}.m4a"
+    out = os.path.join(HERE, f"focus_dorian_drift_n{pct}.m4a")
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", tmp, "-c:a", "aac_at",
                     "-b:a", "128k", "-movflags", "+faststart", out], check=True)
     subprocess.run(["rm", "-f", tmp], check=True)
-    print(f"  wrote {out}", flush=True)
+    print(f"  wrote {os.path.basename(out)}", flush=True)
 print("done")
